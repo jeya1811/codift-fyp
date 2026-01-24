@@ -168,6 +168,43 @@ CountFunc/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/CountFunc.dir/build.make CMakeFiles/CountFunc.dir/build
 .PHONY : CountFunc/fast
 
+#=============================================================================
+# Target rules for targets named CodiftPass
+
+# Build rule for target.
+CodiftPass: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CodiftPass
+.PHONY : CodiftPass
+
+# fast build rule for target.
+CodiftPass/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CodiftPass.dir/build.make CMakeFiles/CodiftPass.dir/build
+.PHONY : CodiftPass/fast
+
+passes/codiftPass.o: passes/codiftPass.cpp.o
+.PHONY : passes/codiftPass.o
+
+# target to build an object file
+passes/codiftPass.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CodiftPass.dir/build.make CMakeFiles/CodiftPass.dir/passes/codiftPass.cpp.o
+.PHONY : passes/codiftPass.cpp.o
+
+passes/codiftPass.i: passes/codiftPass.cpp.i
+.PHONY : passes/codiftPass.i
+
+# target to preprocess a source file
+passes/codiftPass.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CodiftPass.dir/build.make CMakeFiles/CodiftPass.dir/passes/codiftPass.cpp.i
+.PHONY : passes/codiftPass.cpp.i
+
+passes/codiftPass.s: passes/codiftPass.cpp.s
+.PHONY : passes/codiftPass.s
+
+# target to generate assembly for a file
+passes/codiftPass.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CodiftPass.dir/build.make CMakeFiles/CodiftPass.dir/passes/codiftPass.cpp.s
+.PHONY : passes/codiftPass.cpp.s
+
 passes/countFunc.o: passes/countFunc.cpp.o
 .PHONY : passes/countFunc.o
 
@@ -203,7 +240,11 @@ help:
 	@echo "... acc_gen"
 	@echo "... intrinsics_gen"
 	@echo "... omp_gen"
+	@echo "... CodiftPass"
 	@echo "... CountFunc"
+	@echo "... passes/codiftPass.o"
+	@echo "... passes/codiftPass.i"
+	@echo "... passes/codiftPass.s"
 	@echo "... passes/countFunc.o"
 	@echo "... passes/countFunc.i"
 	@echo "... passes/countFunc.s"

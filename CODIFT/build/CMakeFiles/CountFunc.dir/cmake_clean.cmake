@@ -1,8 +1,8 @@
 file(REMOVE_RECURSE
   "CMakeFiles/CountFunc.dir/passes/countFunc.cpp.o"
   "CMakeFiles/CountFunc.dir/passes/countFunc.cpp.o.d"
-  "CountFunc.pdb"
-  "CountFunc.so"
+  "libCountFunc.pdb"
+  "libCountFunc.so"
 )
 
 # Per-language clean rules from dependency scanning.

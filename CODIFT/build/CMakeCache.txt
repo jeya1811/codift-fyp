@@ -261,10 +261,10 @@ ZLIB_LIBRARY_DEBUG:FILEPATH=ZLIB_LIBRARY_DEBUG-NOTFOUND
 ZLIB_LIBRARY_RELEASE:FILEPATH=/usr/lib/x86_64-linux-gnu/libz.so
 
 //Path to a file.
-zstd_INCLUDE_DIR:PATH=zstd_INCLUDE_DIR-NOTFOUND
+zstd_INCLUDE_DIR:PATH=/usr/include
 
 //Path to a library.
-zstd_LIBRARY:FILEPATH=zstd_LIBRARY-NOTFOUND
+zstd_LIBRARY:FILEPATH=/usr/lib/x86_64-linux-gnu/libzstd.so
 
 
 ########################
@@ -431,6 +431,8 @@ FIND_PACKAGE_MESSAGE_DETAILS_LibXml2:INTERNAL=[/usr/lib/x86_64-linux-gnu/libxml2
 FIND_PACKAGE_MESSAGE_DETAILS_Terminfo:INTERNAL=[/usr/lib/x86_64-linux-gnu/libtinfo.so][1][v()]
 //Details about finding ZLIB
 FIND_PACKAGE_MESSAGE_DETAILS_ZLIB:INTERNAL=[/usr/lib/x86_64-linux-gnu/libz.so][/usr/include][c ][v1.3()]
+//Details about finding zstd
+FIND_PACKAGE_MESSAGE_DETAILS_zstd:INTERNAL=[/usr/lib/x86_64-linux-gnu/libzstd.so][/usr/include][v()]
 //ADVANCED property for variable: HAVE_FFI_CALL
 HAVE_FFI_CALL-ADVANCED:INTERNAL=1
 //Test HAVE_FFI_CALL
