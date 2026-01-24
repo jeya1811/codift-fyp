@@ -1,3 +1,4 @@
+```bash
 jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ clang++-15 -S -emit-llvm src/code/test.cpp -o llvmIR/test.ll
 jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ cd build
 jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT/build$ cmake -DLLVM_DIR=/usr/lib/llvm-15/cmake ../src
@@ -97,3 +98,4 @@ Processing large input: 200
 
 ===Test Complete===
 jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ 
+```
