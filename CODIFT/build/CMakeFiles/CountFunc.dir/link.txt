@@ -1,1 +1,0 @@
-/usr/bin/c++ -fPIC -shared  -o libCountFunc.so CMakeFiles/CountFunc.dir/passes/countFunc.cpp.o 

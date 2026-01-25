@@ -1,7 +1,0 @@
-/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT/build/CMakeFiles/intrinsics_gen.dir
-/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT/build/CMakeFiles/omp_gen.dir
-/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT/build/CMakeFiles/acc_gen.dir
-/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT/build/CMakeFiles/CountFunc.dir
-/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT/build/CMakeFiles/CodiftPass.dir
-/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT/build/CMakeFiles/edit_cache.dir
-/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT/build/CMakeFiles/rebuild_cache.dir
