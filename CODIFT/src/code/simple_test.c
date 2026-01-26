@@ -1,10 +1,10 @@
 #include <stdio.h>
 
-int main(){
-    int x= 10;
+int main() {
+  int x = 10;
 
-    if(x> 5){
-        printf("hello");
-    }
-    return 0;
+  if (x > 5) {
+    printf("hello");
+  }
+  return 0;
 }
