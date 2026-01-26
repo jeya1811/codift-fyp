@@ -163,7 +163,6 @@ make[2]: warning:  Clock skew detected.  Your build may be incomplete.
 [100%] Built target CodiftCheckPass
 make[1]: warning:  Clock skew detected.  Your build may be incomplete.
 
-
 jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ rm -r build
 jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ mkdir build
 jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ cd build
@@ -204,6 +203,32 @@ jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ opt-
 [CODIFT] Injected security check before instruction in main
 [CODIFT] Injected security check before instruction in main
 [CODIFT] Found return instruction in function: main
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$
+
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ find . -type f \( -name "*.cpp" -o -name "*.c" -o -name "*.h" \) -exec clang-format -i {} +
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ cd build
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT/build$ make clean
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT/build$ make
+[ 20%] Building CXX object CMakeFiles/CountFunc.dir/passes/countFunc.cpp.o
+[ 40%] Linking CXX shared module libCountFunc.so
+[ 40%] Built target CountFunc
+[ 60%] Building CXX object CMakeFiles/CodiftPass.dir/passes/codiftCheckPass.cpp.o
+[ 80%] Building CXX object CMakeFiles/CodiftPass.dir/passes/codiftInjectPass.cpp.o
+[100%] Linking CXX shared module CodiftPass.so
+[100%] Built target CodiftPass
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT/build$ opt-15 -load ./CodiftPass.so --help-list 2>&1 | grep -i "codift"
+      --codift-check                                                       - CODIFT check pass
+      --codift-inject                                                      - CODIFT inject pass
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT/build$ cd ..
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ opt-15 -load ./build/CodiftPass.so -codift-inject -enable-new-pm=0 llvmIR/simple_test.ll -S -o llvmIR/simple_test_injectOnly.ll
+[CO-DIFT INJECT] Processing: main
+[INJECT] Alloca initialized
+[INJECT] Alloca initialized
+[INJECT] Store
+[INJECT] Store
+[INJECT] Load
+[INJECT] Store
+[CO-DIFT INJECT] Modified: main
 jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$
 
 ```

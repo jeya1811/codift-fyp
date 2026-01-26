@@ -35,8 +35,7 @@ public:
             modified = true;
           }
         } else if (auto *RI = dyn_cast<ReturnInst>(&I)) {
-          errs() << "[CODIFT] Found return instruction in function: "
-                 << F.getName() << "\n";
+          errs() << "[CODIFT] Found return instruction in function: " << F.getName() << "\n";
         }
       }
     }
@@ -44,34 +43,31 @@ public:
   }
 
 private:
-  bool injectSecurityCheck(Value *valueToCheck, Instruction *location,
-                           Function *parentFunc) {
+  bool injectSecurityCheck(Value *valueToCheck, Instruction *location, Function *parentFunc) {
     IRBuilder<> Builder(location);
     FunctionType *readFuncType = FunctionType::get(
-        Builder.getInt32Ty(), {Builder.getInt8PtrTy()}, false);
-    FunctionCallee readFunc = parentFunc->getParent()->getOrInsertFunction(
-        "ramReadFunc", readFuncType);
+        Builder.getInt32Ty(),
+        {Builder.getInt8PtrTy()},
+        false);
+    FunctionCallee readFunc = parentFunc->getParent()->getOrInsertFunction("ramReadFunc", readFuncType);
 
-    FunctionType *secFuncType =
-        FunctionType::get(Builder.getVoidTy(), {Builder.getInt32Ty()}, false);
-    FunctionCallee secFunc =
-        parentFunc->getParent()->getOrInsertFunction("secExcFunc", secFuncType);
+    FunctionType *secFuncType = FunctionType::get(
+        Builder.getVoidTy(),
+        {Builder.getInt32Ty()},
+        false);
+    FunctionCallee secFunc = parentFunc->getParent()->getOrInsertFunction("secExcFunc", secFuncType);
     Value *valueAsVoidPtr;
     if (valueToCheck->getType()->isPointerTy()) {
-      valueAsVoidPtr =
-          Builder.CreatePointerCast(valueToCheck, Builder.getInt8PtrTy());
+      valueAsVoidPtr = Builder.CreatePointerCast(valueToCheck, Builder.getInt8PtrTy());
     } else {
-      AllocaInst *tempAlloca =
-          Builder.CreateAlloca(valueToCheck->getType(), nullptr, "codift_temp");
+      AllocaInst *tempAlloca = Builder.CreateAlloca(valueToCheck->getType(), nullptr, "codift_temp");
       Builder.CreateStore(valueToCheck, tempAlloca);
-      valueAsVoidPtr =
-          Builder.CreatePointerCast(tempAlloca, Builder.getInt8PtrTy());
+      valueAsVoidPtr = Builder.CreatePointerCast(tempAlloca, Builder.getInt8PtrTy());
     }
     Builder.SetInsertPoint(location);
     CallInst *tagValue = Builder.CreateCall(readFunc, {valueAsVoidPtr});
     Builder.CreateCall(secFunc, {tagValue});
-    errs() << "[CODIFT] Injected security check before instruction in "
-           << parentFunc->getName() << "\n";
+    errs() << "[CODIFT] Injected security check before instruction in " << parentFunc->getName() << "\n";
     return true;
   }
 };

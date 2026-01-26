@@ -18,18 +18,14 @@ int main() {
   int clean_data = 42;
   int tainted_data = 200;
 
-  printf("1.Testing with clean data:\n"
-         "Value: %d\n",
-         clean_data);
+  printf("1.Testing with clean data:\nValue: %d\n", clean_data);
   codift_clean_region(&clean_data, sizeof(int));
   uint32_t tag = ramReadFunc(&clean_data);
   printf("    Tag read back: %u\n", tag);
   secExcFunc(TAG_CLEAN);
   process_input(&clean_data);
 
-  printf("\n2.Testing with Tainted data:\n"
-         "Value: %d (simulating untrusted input)\n",
-         tainted_data);
+  printf("\n2.Testing with Tainted data:\nValue: %d (simulating untrusted input)\n", tainted_data);
   codift_taint_region(&tainted_data, sizeof(int));
   tag = ramReadFunc(&tainted_data);
   printf("    Tag read back: %u\n", tag);
