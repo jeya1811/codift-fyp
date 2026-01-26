@@ -144,6 +144,26 @@ jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ clan
 jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ find . -type f \( -name "*.cpp" -o -name "*.c" -o -name "*.h" \) -exec clang-format -i {} \;
 jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$
 
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ cd build
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT/build$ make clean
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT/build$ make
+-- Configuring done (2.6s)
+-- Generating done (0.8s)
+-- Build files have been written to: /mnt/c/Users/Lenovo/Desktop/github/project/CODIFT/build
+make[1]: Warning: File 'CMakeFiles/Makefile2' has modification time 2.3 s in the future
+make[2]: Warning: File 'CMakeFiles/CountFunc.dir/progress.make' has modification time 2.2 s in the future
+make[2]: warning:  Clock skew detected.  Your build may be incomplete.
+make[2]: Warning: File 'CMakeFiles/CountFunc.dir/progress.make' has modification time 2 s in the future
+[ 25%] Building CXX object CMakeFiles/CountFunc.dir/passes/countFunc.cpp.o
+[ 50%] Linking CXX shared module libCountFunc.so
+make[2]: warning:  Clock skew detected.  Your build may be incomplete.
+[ 50%] Built target CountFunc
+[ 75%] Building CXX object CMakeFiles/CodiftCheckPass.dir/passes/codiftCheckPass.cpp.o
+[100%] Linking CXX shared module CodiftCheckPass.so
+[100%] Built target CodiftCheckPass
+make[1]: warning:  Clock skew detected.  Your build may be incomplete.
+
+
 jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ rm -r build
 jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ mkdir build
 jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ cd build
