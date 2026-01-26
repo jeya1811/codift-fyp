@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void process_input(int *input) {
+void process_input(int* input) {
   if (*input > 100) {
     printf("Processing large input: %d\n", *input);
   } else {

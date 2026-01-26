@@ -8,12 +8,12 @@
 
 static uint32_t tag_memory[TAG_MEMORY_SIZE] = {0};
 
-static inline uint32_t addr_to_index(void *addr) {
+static inline uint32_t addr_to_index(void* addr) {
   uintptr_t ptr = (uintptr_t)addr;
   return (ptr >> 2) % TAG_MEMORY_SIZE;
 }
 
-uint32_t ramReadFunc(void *addr) {
+uint32_t ramReadFunc(void* addr) {
   uint32_t idx = addr_to_index(addr);
   uint32_t tag = tag_memory[idx];
 
@@ -21,7 +21,7 @@ uint32_t ramReadFunc(void *addr) {
   return tag;
 }
 
-void ramWriteFunc(void *addr, uint32_t tag) {
+void ramWriteFunc(void* addr, uint32_t tag) {
   uint32_t idx = addr_to_index(addr);
   tag_memory[idx] = tag;
 
@@ -44,20 +44,20 @@ void codift_init(void) {
          sizeof(tag_memory));
 }
 
-void codift_taint_region(void *start, size_t size) {
+void codift_taint_region(void* start, size_t size) {
   printf("[CODIFT] Tainting region: %p (size: %zu)\n", start, size);
 
   for (size_t i = 0; i < size; i++) {
-    void *addr = (void *)((uintptr_t)start + i);
+    void* addr = (void*)((uintptr_t)start + i);
     ramWriteFunc(addr, TAG_TAINTED);
   }
 }
 
-void codift_clean_region(void *start, size_t size) {
+void codift_clean_region(void* start, size_t size) {
   printf("[CODIFT] Cleaning region: %p (size: %zu)\n", start, size);
 
   for (size_t i = 0; i < size; i++) {
-    void *addr = (void *)((uintptr_t)start + i);
+    void* addr = (void*)((uintptr_t)start + i);
     ramWriteFunc(addr, TAG_CLEAN);
   }
 }

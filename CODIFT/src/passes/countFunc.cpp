@@ -6,14 +6,14 @@ using namespace llvm;
 
 namespace {
 class CountFunc : public FunctionPass {
-public:
+  public:
   static char ID;
   CountFunc() : FunctionPass(ID) {}
 
-  bool runOnFunction(Function &F) override {
+  bool runOnFunction(Function& F) override {
     errs() << "Hello from function: " << F.getName() << "\n";
     int blockCount = 0;
-    for (auto &BB : F) {
+    for (auto& BB : F) {
       blockCount++;
     }
     errs() << " Has " << blockCount << " Basic blocks\n";
