@@ -12,15 +12,15 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_library(CountFunc MODULE
     passes/countFunc.cpp
 )
-add_library(CodiftPass MODULE
-    passes/codiftPass.cpp
+add_library(CodiftCheckPass MODULE
+    passes/codiftCheckPass.cpp
 )
 
-target_link_libraries(CodiftPass
+target_link_libraries(CodiftCheckPass
     ${LLVM_LIBRARIES}
 )
 
-set_target_properties(CodiftPass PROPERTIES
+set_target_properties(CodiftCheckPass PROPERTIES
     PREFIX ""
     COMPILE_FLAGS "-fno-rtti"
 )

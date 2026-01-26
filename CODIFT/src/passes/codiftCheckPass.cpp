@@ -7,10 +7,10 @@
 using namespace llvm;
 
 namespace {
-class CodiftPass : public FunctionPass {
+class CodiftCheckPass : public FunctionPass {
 public:
   static char ID;
-  CodiftPass() : FunctionPass(ID) {}
+  CodiftCheckPass() : FunctionPass(ID) {}
 
   bool runOnFunction(Function &F) override {
     bool modified = false;
@@ -77,5 +77,5 @@ private:
 };
 } // namespace
 
-char CodiftPass::ID = 0;
-static RegisterPass<CodiftPass> X("codift", "CODIFT check pass");
+char CodiftCheckPass::ID = 0;
+static RegisterPass<CodiftCheckPass> X("codift-check", "CODIFT check pass");
