@@ -231,4 +231,28 @@ jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ opt-
 [CO-DIFT INJECT] Modified: main
 jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$
 
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ opt-15 -load ./build/CodiftPass.so -codift-check -codift-inject llvmIR/simple_test.ll -enable-new-pm=0 -S -o llvmIR/simple_test_checkAndInject.ll
+[CODIFT] Injected security check before instruction in main
+[CODIFT] Injected security check before instruction in main
+[CODIFT] Found return instruction in function: main        
+[CO-DIFT INJECT] Processing: main
+[INJECT] Alloca initialized
+[INJECT] Alloca initialized
+[INJECT] Store
+[INJECT] Store
+[INJECT] Load
+[INJECT] Store
+[INJECT] Alloca initialized
+[INJECT] Store
+[CO-DIFT INJECT] Modified: main
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ echo "ramReadFunc:" $(grep -c "ramReadFunc" llvmIR/simple_test_checkAndInject.ll)
+ramReadFunc: 6
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ echo "ramWriteFunc:" $(grep -c "ramWriteFunc" llvmIR/simple_test_checkAndInject.ll)
+ramWriteFunc: 9
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ echo "secExcFunc:" $(grep -c "secExcFunc" llvmIR/simple_test_checkAndInject.ll)
+secExcFunc: 3
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ echo "Total operations:" $(grep -c "ramReadFunc\|ramWriteFunc\|secExcFunc" llvmIR/simple_test_checkAndInject.ll)
+Total operations: 18
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$
+
 ```
