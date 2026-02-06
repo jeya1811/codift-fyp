@@ -255,4 +255,324 @@ jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ echo
 Total operations: 18
 jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$
 
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ gcc -c -fPIC src/runtime/selective_codift_runtime.c -o selective_codift_runtime.o
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ gcc -shared selective_codift_runtime.o -o libselcodiftruntime.so
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ clang-15 -S -emit-llvm src/code/selective_test.c -o llvmIR/selective_test.ll
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ cd build
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT/build$ make clean
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT/build$ make
+[ 16%] Building CXX object CMakeFiles/CountFunc.dir/passes/countFunc.cpp.o
+[ 33%] Linking CXX shared module libCountFunc.so
+[ 33%] Built target CountFunc
+[ 50%] Building CXX object CMakeFiles/CodiftPass.dir/passes/codiftCheckPass.cpp.o
+[ 66%] Building CXX object CMakeFiles/CodiftPass.dir/passes/codiftInjectPass.cpp.o
+[ 83%] Building CXX object CMakeFiles/CodiftPass.dir/passes/selective_codiftInjectPass.cpp.o
+[100%] Linking CXX shared module CodiftPass.so
+[100%] Built target CodiftPass
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT/build$ opt-15 -load ./CODIFTPass.so --help-list 2>&1 | grep -i "codift"
+      --codift-check                                                       - CODIFT check pass
+      --codift-inject                                                      - CODIFT inject pass
+      --codift-inject-selective                                            - SELECTIVE CO-DIFT inject pass
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT/build$ cd ..
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ opt-15 -load ./build/CodiftPass.so -codift-check -codift-inject llvmIR/selective_test.ll -enable-new-pm=0 -S -o llvmIR/selective_test_checkAndInject.ll
+[CODIFT] Found return instruction in function: get_untrusted_input
+[CO-DIFT INJECT] Processing: get_untrusted_input
+[CODIFT] Found return instruction in function: get_trusted_data
+[CO-DIFT INJECT] Processing: get_trusted_data
+[CODIFT] Injected security check before instruction in main
+[CODIFT] Injected security check before instruction in main
+[CODIFT] Injected security check before instruction in main
+[CODIFT] Injected security check before instruction in main
+[CODIFT] Injected security check before instruction in main
+[CODIFT] Injected security check before instruction in main
+[CODIFT] Found return instruction in function: main
+[CO-DIFT INJECT] Processing: main
+[INJECT] Alloca initialized
+[INJECT] Alloca initialized
+[INJECT] Alloca initialized
+[INJECT] Alloca initialized
+[INJECT] Alloca initialized
+[INJECT] Alloca initialized
+[INJECT] Alloca initialized
+[INJECT] Alloca initialized
+[INJECT] Alloca initialized
+[INJECT] Store
+[INJECT] Store
+[INJECT] Store
+[INJECT] Load
+[INJECT] Store
+[INJECT] Load
+[INJECT] Store
+[INJECT] Binary op: add
+[INJECT] Store
+[INJECT] Store
+[INJECT] Store
+[INJECT] Load
+[INJECT] Store
+[INJECT] Load
+[INJECT] Store
+[INJECT] Binary op: add
+[INJECT] Store
+[INJECT] Store
+[INJECT] Load
+[INJECT] Store
+[INJECT] Store
+[INJECT] Load
+[INJECT] Store
+[INJECT] Store
+[INJECT] Load
+[INJECT] Store
+[INJECT] Alloca initialized
+[INJECT] Store
+[INJECT] Store
+[INJECT] Load
+[INJECT] Store
+[INJECT] Alloca initialized
+[INJECT] Store
+[CO-DIFT INJECT] Modified: main
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ grep -c "ramReadFunc\|ramWriteFunc\|secExcFunc" llvmIR/selective_test_checkAndInject.ll
+87
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ opt-15 -load ./build/CodiftPass.so -codift-check -codift-inject-selective llvmIR/selective_test.ll -enable-new-pm=0 -S -o llvmIR/selective_test_selectiveCheckAndInject.ll
+[CODIFT] Found return instruction in function: get_untrusted_input
+[SELECTIVE CO-DIFT INJECT] Processing: get_untrusted_input
+[CODIFT] Found return instruction in function: get_trusted_data
+[SELECTIVE CO-DIFT INJECT] Processing: get_trusted_data
+[CODIFT] Injected security check before instruction in main
+[CODIFT] Injected security check before instruction in main
+[CODIFT] Injected security check before instruction in main
+[CODIFT] Injected security check before instruction in main
+[CODIFT] Injected security check before instruction in main
+[CODIFT] Injected security check before instruction in main
+[CODIFT] Found return instruction in function: main
+[SELECTIVE CO-DIFT INJECT] Processing: main
+  [SELECTIVE] Initializing alloca (security context):   %1 = alloca i32, align 4
+  [SELECTIVE] Initialized alloca
+  [SELECTIVE] Initializing alloca (security context):   %2 = alloca i32, align 4
+  [SELECTIVE] Initialized alloca
+  [SELECTIVE] Initializing alloca (security context):   %3 = alloca i32, align 4
+  [SELECTIVE] Initialized alloca
+  [SELECTIVE] Initializing alloca (security context):   %4 = alloca i32, align 4
+  [SELECTIVE] Initialized alloca
+  [SELECTIVE] Initializing alloca (security context):   %5 = alloca i32, align 4
+  [SELECTIVE] Initialized alloca
+  [SELECTIVE] Initializing alloca (security context):   %6 = alloca i32, align 4
+  [SELECTIVE] Initialized alloca
+  [SELECTIVE] Skipping alloca init (local temp):   %7 = alloca [5 x i32], align 16
+  [SELECTIVE] Initializing alloca (security context):   %8 = alloca i32, align 4
+  [SELECTIVE] Initialized alloca
+  [SELECTIVE] Initializing alloca (security context):   %9 = alloca i32, align 4
+  [SELECTIVE] Initialized alloca
+  [SELECTIVE] Skipping store (clean data):   store i32 0, ptr %1, align 4
+  [SELECTIVE] Skipping store (clean data):   store i32 10, ptr %2, align 4
+  [SELECTIVE] Skipping store (clean data):   store i32 20, ptr %3, align 4
+  [SELECTIVE] Tracking load:   %10 = load i32, ptr %2, align 4
+  [SELECTIVE] Injected load
+  [SELECTIVE] Tracking store (tainted data):   store i32 %11, ptr %codift_inject_temp, align 4
+  [SELECTIVE] Injected store
+  [SELECTIVE] Tracking load:   %13 = load i32, ptr %3, align 4
+  [SELECTIVE] Injected load
+  [SELECTIVE] Tracking store (tainted data):   store i32 %14, ptr %codift_inject_temp3, align 4
+  [SELECTIVE] Injected store
+  [SELECTIVE] Tracking (security context):   %16 = add nsw i32 %11, %14
+  [SELECTIVE] Injected binary op: add
+  [SELECTIVE] Skipping store (clean data):   store i32 %18, ptr %codift_inject_temp7, align 4
+  [SELECTIVE] Skipping store (clean data):   store i32 %18, ptr %4, align 4
+  [SELECTIVE] Tracking store (tainted data):   store i32 %20, ptr %5, align 4
+  [SELECTIVE] Injected store
+  [SELECTIVE] Tracking load:   %22 = load i32, ptr %4, align 4
+  [SELECTIVE] Injected load
+  [SELECTIVE] Tracking store (tainted data):   store i32 %23, ptr %codift_inject_temp9, align 4
+  [SELECTIVE] Injected store
+  [SELECTIVE] Tracking load:   %25 = load i32, ptr %5, align 4
+  [SELECTIVE] Injected load
+  [SELECTIVE] Tracking store (tainted data):   store i32 %26, ptr %codift_inject_temp11, align 4
+  [SELECTIVE] Injected store
+  [SELECTIVE] Tracking (security context):   %28 = add nsw i32 %23, %26
+  [SELECTIVE] Injected binary op: add
+  [SELECTIVE] Skipping store (clean data):   store i32 %30, ptr %codift_inject_temp16, align 4
+  [SELECTIVE] Skipping store (clean data):   store i32 %30, ptr %6, align 4
+  [SELECTIVE] Tracking load:   %31 = load i32, ptr %6, align 4
+  [SELECTIVE] Injected load
+  [SELECTIVE] Tracking store (tainted data):   store i32 %32, ptr %codift_inject_temp17, align 4
+  [SELECTIVE] Injected store
+  [SELECTIVE] Tracking store (tainted data):   store i32 %32, ptr %34, align 16
+  [SELECTIVE] Injected store
+  [SELECTIVE] Tracking load:   %37 = load i32, ptr %36, align 16
+  [SELECTIVE] Injected load
+  [SELECTIVE] Tracking store (tainted data):   store i32 %38, ptr %codift_inject_temp20, align 4
+  [SELECTIVE] Injected store
+  [SELECTIVE] Tracking store (tainted data):   store i32 %38, ptr %8, align 4
+  [SELECTIVE] Injected store
+  [SELECTIVE] Tracking load:   %41 = load i32, ptr %8, align 4
+  [SELECTIVE] Injected load
+  [SELECTIVE] Tracking store (tainted data):   store i32 %42, ptr %codift_inject_temp23, align 4
+  [SELECTIVE] Injected store
+  [SELECTIVE] Initializing alloca (security context):   %codift_temp = alloca i1, align 1
+  [SELECTIVE] Initialized alloca
+  [SELECTIVE] Skipping store (clean data):   store i1 %44, ptr %codift_temp, align 1
+  [SELECTIVE] Skipping store (clean data):   store i32 %51, ptr %9, align 4
+  [SELECTIVE] Tracking load:   %52 = load i32, ptr %9, align 4
+  [SELECTIVE] Injected load
+  [SELECTIVE] Tracking store (tainted data):   store i32 %53, ptr %codift_inject_temp25, align 4
+  [SELECTIVE] Injected store
+  [SELECTIVE] Initializing alloca (security context):   %codift_temp1 = alloca i1, align 1
+  [SELECTIVE] Initialized alloca
+  [SELECTIVE] Skipping store (clean data):   store i1 %55, ptr %codift_temp1, align 1
+[SELECTIVE CO-DIFT INJECT] Modified: main
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ grep -c "ramReadFunc\|ramWriteFunc\|secExcFunc" llvmIR/selective_test_selectiveCheckAndInject.ll
+69
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ 
+
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ gcc src/code/manualDetecting_test.c -L. -lcodiftruntime -I. -o direct_test
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ LD_LIBRARY_PATH=. ./direct_test
+[CODIFT] Initialized 
+(tag memory size: 262144 bytes)
+=== Direct Security Test ===
+
+TEST 1: Clean data
+[CODIFT] Read Tag: address= 0x7fff6073b018 -> tag= 0
+  Tag: 0
+
+[CODIFT SECURITY CHECK PASSED]
+
+TEST 2: Tainted data
+[CODIFT] Tainting region: 0x7fff6073b01c (size: 4)
+[CODIFT] Write Tag: address= 0x7fff6073b01c <- tag= 1
+[CODIFT] Write Tag: address= 0x7fff6073b01d <- tag= 1
+[CODIFT] Write Tag: address= 0x7fff6073b01e <- tag= 1
+[CODIFT] Write Tag: address= 0x7fff6073b01f <- tag= 1
+[CODIFT] Read Tag: address= 0x7fff6073b01c -> tag= 1
+  Tag: 1
+
+[CODIFT SECURITY EXCEPTION]
+Tainted Data Detected
+Potential control-flow attack prevented...
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ clang-15 -S -emit-llvm src/code/manualDetecting_test.c -o llvmIR/manualDetecting_test.ll
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ opt-15 -load ./build/CodiftPass.so -codift-check -codift-inject-selective -enable-new-pm=0 llvmIR/manualDetecting_test.ll -S -o llvmIR/manualDetecting_test_selectiveCheckAndInject.ll
+[CODIFT] Injected security check before instruction in main
+[CODIFT] Injected security check before instruction in main
+[CODIFT] Injected security check before instruction in main
+[CODIFT] Injected security check before instruction in main
+[CODIFT] Injected security check before instruction in main
+[CODIFT] Injected security check before instruction in main
+[CODIFT] Injected security check before instruction in main
+[CODIFT] Injected security check before instruction in main
+[CODIFT] Injected security check before instruction in main
+[CODIFT] Injected security check before instruction in main
+[CODIFT] Injected security check before instruction in main
+[CODIFT] Found return instruction in function: main
+[SELECTIVE CO-DIFT INJECT] Processing: main
+  [SELECTIVE] Initializing alloca (security context):   %1 = alloca i32, align 4
+  [SELECTIVE] Initialized alloca
+  [SELECTIVE] Initializing alloca (security context):   %2 = alloca i32, align 4
+  [SELECTIVE] Initialized alloca
+  [SELECTIVE] Initializing alloca (security context):   %3 = alloca i32, align 4
+  [SELECTIVE] Initialized alloca
+  [SELECTIVE] Initializing alloca (security context):   %4 = alloca i32, align 4
+  [SELECTIVE] Initialized alloca
+  [SELECTIVE] Initializing alloca (security context):   %5 = alloca i32, align 4
+  [SELECTIVE] Initialized alloca
+  [SELECTIVE] Skipping store (clean data):   store i32 0, ptr %1, align 4
+  [SELECTIVE] Skipping store (clean data):   store i32 42, ptr %2, align 4
+  [SELECTIVE] Skipping store (clean data):   store i32 %12, ptr %3, align 4
+  [SELECTIVE] Tracking load:   %13 = load i32, ptr %3, align 4
+  [SELECTIVE] Injected load
+  [SELECTIVE] Tracking store (tainted data):   store i32 %14, ptr %codift_inject_temp, align 4
+  [SELECTIVE] Injected store
+  [SELECTIVE] Tracking load:   %18 = load i32, ptr %3, align 4
+  [SELECTIVE] Injected load
+  [SELECTIVE] Tracking store (tainted data):   store i32 %19, ptr %codift_inject_temp2, align 4
+  [SELECTIVE] Injected store
+  [SELECTIVE] Skipping store (clean data):   store i32 999, ptr %4, align 4
+  [SELECTIVE] Skipping store (clean data):   store i32 %26, ptr %5, align 4
+  [SELECTIVE] Tracking load:   %27 = load i32, ptr %5, align 4
+  [SELECTIVE] Injected load
+  [SELECTIVE] Tracking store (tainted data):   store i32 %28, ptr %codift_inject_temp4, align 4
+  [SELECTIVE] Injected store
+  [SELECTIVE] Tracking load:   %32 = load i32, ptr %5, align 4
+  [SELECTIVE] Injected load
+  [SELECTIVE] Tracking store (tainted data):   store i32 %33, ptr %codift_inject_temp6, align 4
+  [SELECTIVE] Injected store
+[SELECTIVE CO-DIFT INJECT] Modified: main
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ clang-15 llvmIR/manualDetecting_test_selectiveCheckAndInject.ll -L. -lcodiftruntime -o manual_test_protected
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ LD_LIBRARY_PATH=. ./manual_test_protected
+[CODIFT] Write Tag: address= 0x7ffc4c5e627c <- tag= 0
+[CODIFT] Write Tag: address= 0x7ffc4c5e6278 <- tag= 0
+[CODIFT] Write Tag: address= 0x7ffc4c5e6274 <- tag= 0
+[CODIFT] Write Tag: address= 0x7ffc4c5e6270 <- tag= 0
+[CODIFT] Write Tag: address= 0x7ffc4c5e626c <- tag= 0
+[CODIFT] Read Tag: address= 0x7e0aa1ef1283 -> tag= 0
+
+[CODIFT SECURITY CHECK PASSED]
+[CODIFT] Initialized
+(tag memory size: 262144 bytes)
+[CODIFT] Read Tag: address= 0x7e0aa1c60100 -> tag= 0
+
+[CODIFT SECURITY CHECK PASSED]
+=== Direct Security Test ===
+
+[CODIFT] Read Tag: address= 0x7e0aa1c60100 -> tag= 0
+
+[CODIFT SECURITY CHECK PASSED]
+TEST 1: Clean data
+[CODIFT] Read Tag: address= 0x7e0aa1ef1196 -> tag= 0
+
+[CODIFT SECURITY CHECK PASSED]
+[CODIFT] Read Tag: address= 0x7ffc4c5e6278 -> tag= 0
+[CODIFT] Read Tag: address= 0x7ffc4c5e6274 -> tag= 0
+[CODIFT] Write Tag: address= 0x7ffc4c5e6280 <- tag= 0
+[CODIFT] Read Tag: address= 0x7ffc4c5e6284 -> tag= 0
+[CODIFT] Write Tag: address= 0x7ffc4c5e6280 <- tag= 0
+[CODIFT] Read Tag: address= 0x7e0aa1c60100 -> tag= 0
+
+[CODIFT SECURITY CHECK PASSED]
+  Tag: 0
+[CODIFT] Read Tag: address= 0x7ffc4c5e6274 -> tag= 0
+[CODIFT] Write Tag: address= 0x7ffc4c5e6288 <- tag= 0
+[CODIFT] Read Tag: address= 0x7ffc4c5e628c -> tag= 0
+[CODIFT] Write Tag: address= 0x7ffc4c5e6288 <- tag= 0
+[CODIFT] Read Tag: address= 0x7e0aa1ef124b -> tag= 0
+
+[CODIFT SECURITY CHECK PASSED]
+
+[CODIFT SECURITY CHECK PASSED]
+[CODIFT] Read Tag: address= 0x7e0aa1c60100 -> tag= 0
+
+[CODIFT SECURITY CHECK PASSED]
+
+TEST 2: Tainted data
+[CODIFT] Read Tag: address= 0x7e0aa1ef12c0 -> tag= 0
+
+[CODIFT SECURITY CHECK PASSED]
+[CODIFT] Tainting region: 0x7ffc4c5e6270 (size: 4)
+[CODIFT] Write Tag: address= 0x7ffc4c5e6270 <- tag= 1
+[CODIFT] Write Tag: address= 0x7ffc4c5e6271 <- tag= 1
+[CODIFT] Write Tag: address= 0x7ffc4c5e6272 <- tag= 1
+[CODIFT] Write Tag: address= 0x7ffc4c5e6273 <- tag= 1
+[CODIFT] Read Tag: address= 0x7e0aa1ef1196 -> tag= 0
+
+[CODIFT SECURITY CHECK PASSED]
+[CODIFT] Read Tag: address= 0x7ffc4c5e6270 -> tag= 1
+[CODIFT] Read Tag: address= 0x7ffc4c5e626c -> tag= 0
+[CODIFT] Write Tag: address= 0x7ffc4c5e6290 <- tag= 0
+[CODIFT] Read Tag: address= 0x7ffc4c5e6294 -> tag= 0
+[CODIFT] Write Tag: address= 0x7ffc4c5e6290 <- tag= 0
+[CODIFT] Read Tag: address= 0x7e0aa1c60100 -> tag= 0
+
+[CODIFT SECURITY CHECK PASSED]
+  Tag: 1
+[CODIFT] Read Tag: address= 0x7ffc4c5e626c -> tag= 0
+[CODIFT] Write Tag: address= 0x7ffc4c5e6298 <- tag= 0
+[CODIFT] Read Tag: address= 0x7ffc4c5e629c -> tag= 0
+[CODIFT] Write Tag: address= 0x7ffc4c5e6298 <- tag= 0
+[CODIFT] Read Tag: address= 0x7e0aa1ef124b -> tag= 0
+
+[CODIFT SECURITY CHECK PASSED]
+
+[CODIFT SECURITY EXCEPTION]
+Tainted Data Detected
+Potential control-flow attack prevented...
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ find . -type f \( -name "*.cpp" -o -name "*.c" -o -name "*.h" \) -exec clang-format -i {} +
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ 
+
 ```
