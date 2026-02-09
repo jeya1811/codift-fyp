@@ -868,9 +868,76 @@ TEST 2: Tainted data
 [CODIFT SECURITY EXCEPTION]
 Tainted Data Detected
 Potential control-flow attack prevented...
-jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ grep -c "ramReadFunc\|ramWriteFunc\|secExcFunc" llvmIR/auttomaticDetecting_test_selectiveInjectAndSelectiveCheck.ll
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ grep -c "ramReadFunc\|ramWriteFunc\|secExcFunc" llvmIR/automaticDetecting_test_selectiveInjectAndSelectiveCheck.ll
 30
 jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ find . -type f \( -name "*.cpp" -o -name "*.c" -o -name "*.h" \) -exec clang-format -i {} +
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ 
+
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ cd build
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT/build$ make clean
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT/build$ make                                               t
+[ 14%] Building CXX object CMakeFiles/CountFunc.dir/passes/countFunc.cpp.o
+[ 28%] Linking CXX shared module libCountFunc.so
+[ 28%] Built target CountFunc                                                                                                        t
+[ 42%] Building CXX object CMakeFiles/CodiftPass.dir/passes/codiftCheckPass.cpp.o
+[ 57%] Building CXX object CMakeFiles/CodiftPass.dir/passes/codiftInjectPass.cpp.o
+[ 71%] Building CXX object CMakeFiles/CodiftPass.dir/passes/selective_codiftCheckPass.cpp.o
+[ 85%] Building CXX object CMakeFiles/CodiftPass.dir/passes/selective_codiftInjectPass.cpp.o
+[100%] Linking CXX shared module CodiftPass.so
+[100%] Built target CodiftPass
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT/build$ cd ..
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ opt-15 -load ./build/CodiftPass.so -codift-check-selective -codift-inject-selective -enable-new-pm=0 llvmIR/automaticDetecting_test.ll -S -o llvmIR/automaticDetecting_test_selectiveInjectAnd
+SelectiveCheck.ll
+[SELECTIVE CHECK] Processing security function: main
+[SELECTIVE CO-DIFT INJECT] Processing: main
+  [SELECTIVE] Tainted memory argument: @.str.4 = private unnamed_addr constant [3 x i8] c"%d\00", align 1
+  [SELECTIVE] Tainted memory argument:   %4 = alloca i32, align 4
+[SELECTIVE CO-DIFT INJECT] Modified: main
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ clang-15 llvmIR/automaticDetecting_test_selectiveInjectAndSelectiveCheck.ll -L. -lcodiftruntime -o automatic_test_protected
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ LD_LIBRARY_PATH=. ./automatic_test_protected
+[CODIFT] Write Tag: address= 0x7ffcfaa485ec <- tag= 0
+[CODIFT] Write Tag: address= 0x7ffcfaa485e8 <- tag= 0
+[CODIFT] Write Tag: address= 0x7ffcfaa485e4 <- tag= 0
+[CODIFT] Write Tag: address= 0x7ffcfaa485e0 <- tag= 0
+[CODIFT] Write Tag: address= 0x7ffcfaa485dc <- tag= 0
+[CODIFT] Initialized
+(tag memory size: 262144 bytes)
+=== Direct Security Test ===
+
+TEST 1: Clean data
+[CODIFT] Read Tag: address= 0x7ffcfaa485e8 -> tag= 0
+[CODIFT] Read Tag: address= 0x7ffcfaa485e4 -> tag= 0
+[CODIFT] Write Tag: address= 0x7ffcfaa485f0 <- tag= 0
+[CODIFT] Read Tag: address= 0x7ffcfaa485f4 -> tag= 0
+[CODIFT] Write Tag: address= 0x7ffcfaa485f0 <- tag= 0
+  Tag: 0
+[CODIFT] Read Tag: address= 0x7ffcfaa485e4 -> tag= 0
+[CODIFT] Write Tag: address= 0x7ffcfaa485f8 <- tag= 0
+[CODIFT] Read Tag: address= 0x7ffcfaa485fc -> tag= 0
+[CODIFT] Write Tag: address= 0x7ffcfaa485f8 <- tag= 0
+
+[CODIFT SECURITY CHECK PASSED]
+
+TEST 2: Tainted data
+9999
+[CODIFT] Write Tag: address= 0x5ff08d210059 <- tag= 1
+[CODIFT] Write Tag: address= 0x7ffcfaa485e0 <- tag= 1
+[CODIFT] Read Tag: address= 0x7ffcfaa485e0 -> tag= 1
+[CODIFT] Read Tag: address= 0x7ffcfaa485dc -> tag= 0
+[CODIFT] Write Tag: address= 0x7ffcfaa48600 <- tag= 0
+[CODIFT] Read Tag: address= 0x7ffcfaa48604 -> tag= 0
+[CODIFT] Write Tag: address= 0x7ffcfaa48600 <- tag= 0
+  Tag: 1
+[CODIFT] Read Tag: address= 0x7ffcfaa485dc -> tag= 0
+[CODIFT] Write Tag: address= 0x7ffcfaa48608 <- tag= 0
+[CODIFT] Read Tag: address= 0x7ffcfaa4860c -> tag= 0
+[CODIFT] Write Tag: address= 0x7ffcfaa48608 <- tag= 0
+
+[CODIFT SECURITY EXCEPTION]
+Tainted Data Detected
+Potential control-flow attack prevented...
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ grep -c "ramReadFunc\|ramWriteFunc\|secExcFunc" llvmIR/automaticDetecting_test_selectiveInjectAndSelectiveCheck.ll
+30
 jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ 
 
 ```

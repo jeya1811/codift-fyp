@@ -86,7 +86,8 @@ class SelectiveCodiftCheckPass : public FunctionPass {
         "grant_access",
         "sound_alarm",
         "display_access_message",
-        "check_authentication"};
+        "check_authentication", 
+        "main"};// -> main added only for debugging
 
     return securityFunctions.count(name.str()) > 0;
   }
