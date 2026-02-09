@@ -940,4 +940,11 @@ jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ grep
 30
 jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ 
 
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ clang-15 -S -emit-llvm src/code/automaticDetecting_test.c -o llvmIR/automaticDetectingTest.ll
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ opt-15 -load ./build/CodiftPass.so -codift-check-selective -enable-new-pm=0 llvmIR/automaticDetectingTest.ll -S -o llvmIR/automaticDetectingTest_selectiveCheck.ll
+[SELECTIVE CHECK] Processing security function: main
+[SELECTIVE CHECK] Injected check for:   %14 = load i32, ptr %4, align 4
+[SELECTIVE CHECK] Modified: main
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ 
+
 ```

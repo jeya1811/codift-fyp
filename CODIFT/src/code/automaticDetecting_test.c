@@ -1,7 +1,9 @@
 // direct_test.c
 #include "../runtime/codift_runtime.h"
 #include <stdio.h>
-
+void access(int tainted){
+  tainted++;
+}
 int main() {
   codift_init();
 
@@ -17,6 +19,7 @@ int main() {
   printf("\nTEST 2: Tainted data\n");
   int tainted;
   scanf("%d", &tainted);
+  access(tainted);
   uint32_t tainted_tag = ramReadFunc(&tainted);
   printf("  Tag: %u\n", tainted_tag);
   secExcFunc(tainted_tag); // Should FAIL with security exception!
