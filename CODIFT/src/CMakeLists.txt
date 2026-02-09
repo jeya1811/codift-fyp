@@ -15,6 +15,7 @@ add_library(CountFunc MODULE
 add_library(CodiftPass MODULE
     passes/codiftCheckPass.cpp
     passes/codiftInjectPass.cpp
+    passes/selective_codiftCheckPass.cpp
     passes/selective_codiftInjectPass.cpp
 )
 
