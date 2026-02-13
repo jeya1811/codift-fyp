@@ -19,6 +19,8 @@ add_library(CodiftPass MODULE
     passes/selective_codiftInjectPass.cpp
     passes/selectiveCodift_checkPass.cpp
     passes/selectiveCodift_injectPass.cpp
+    passes/checkPass.cpp
+    passes/injectPass.cpp
 )
 
 target_link_libraries(CodiftPass

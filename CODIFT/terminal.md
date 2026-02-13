@@ -1185,4 +1185,124 @@ jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ grep
 46
 jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ 
 
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ mkdir build
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ cd build
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT/build$ cmake -DLLVM_DIR=/urs/lib/llvm-15/cmake ../src
+-- The C compiler identification is GNU 13.3.0
+-- The CXX compiler identification is GNU 13.3.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features       
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Performing Test HAVE_FFI_CALL
+-- Performing Test HAVE_FFI_CALL - Success
+-- Found FFI: /usr/lib/x86_64-linux-gnu/libffi.so  
+-- Performing Test Terminfo_LINKABLE
+-- Performing Test Terminfo_LINKABLE - Success
+-- Found Terminfo: /usr/lib/x86_64-linux-gnu/libtinfo.so  
+-- Found ZLIB: /usr/lib/x86_64-linux-gnu/libz.so (found version "1.3")  
+-- Found zstd: /usr/lib/x86_64-linux-gnu/libzstd.so  
+-- Found LibXml2: /usr/lib/x86_64-linux-gnu/libxml2.so (found version "2.9.14") 
+-- Configuring done (21.4s)
+-- Generating done (0.8s)
+-- Build files have been written to: /mnt/c/Users/Lenovo/Desktop/github/project/CODIFT/build
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT/build$ make
+[  9%] Building CXX object CMakeFiles/CountFunc.dir/passes/countFunc.cpp.o
+[ 18%] Linking CXX shared module libCountFunc.so
+[ 18%] Built target CountFunc
+[ 27%] Building CXX object CMakeFiles/CodiftPass.dir/passes/codiftCheckPass.cpp.o
+[ 36%] Building CXX object CMakeFiles/CodiftPass.dir/passes/codiftInjectPass.cpp.o
+[ 45%] Building CXX object CMakeFiles/CodiftPass.dir/passes/selective_codiftCheckPass.cpp.o
+[ 54%] Building CXX object CMakeFiles/CodiftPass.dir/passes/selective_codiftInjectPass.cpp.o
+[ 63%] Building CXX object CMakeFiles/CodiftPass.dir/passes/selectiveCodift_checkPass.cpp.o
+[ 72%] Building CXX object CMakeFiles/CodiftPass.dir/passes/selectiveCodift_injectPass.cpp.o
+[ 81%] Building CXX object CMakeFiles/CodiftPass.dir/passes/checkPass.cpp.o
+[ 90%] Building CXX object CMakeFiles/CodiftPass.dir/passes/injectPass.cpp.o
+[100%] Linking CXX shared module CodiftPass.so
+[100%] Built target CodiftPass
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT/build$ opt-15 -load ./CodiftPass.so --help-list2>&1 | grep -i "CODIFT"
+      --check                                                              - Selective CODIFT Check Pass
+      --check-selective                                                    - Selective CODIFT Check Pass
+      --codift-check                                                       - CODIFT check pass
+      --codift-check-selective                                             - Selective CO-DIFT Check Pass
+      --codift-inject                                                      - CODIFT inject pass
+      --codift-inject-selective                                            - SELECTIVE CO-DIFT inject pass
+      --inject                                                             - Selective CODIFT Inject Pass
+      --inject-selective                                                   - Selective CODIFT Inject Pass
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT/build$ cd ..
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ mkdir llvmIR
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ clang-15 -S -emit-llvm src/code/automaticDetecting_test.c -o llvmIR/test.ll
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ opt-15 -load ./build/CodiftPass.so -check -inject -enable-new-pm=0 llvmIR/test.ll -S -o llvmIR/testProtected.ll
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ grep -c "ramReadFunc\|ramWriteFunc\|secExcFunc" llvmIR/testProtected.ll
+36
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ opt-15 -load ./build/CodiftPass.so -codift-check -codift-inject -enable-new-pm=0 llvmIR/test.ll -S -o llvmIR/testProtected.ll
+[CODIFT] Found return instruction in function: access
+[CO-DIFT INJECT] Processing: access
+[INJECT] Alloca initialized
+[INJECT] Store
+[INJECT] Load
+[INJECT] Store
+[INJECT] Binary op: add
+[INJECT] Store
+[INJECT] Store
+[CO-DIFT INJECT] Modified: access
+[CODIFT] Injected security check before instruction in main
+[CODIFT] Injected security check before instruction in main
+[CODIFT] Injected security check before instruction in main
+[CODIFT] Injected security check before instruction in main
+[CODIFT] Injected security check before instruction in main
+[CODIFT] Injected security check before instruction in main
+[CODIFT] Injected security check before instruction in main
+[CODIFT] Injected security check before instruction in main
+[CODIFT] Injected security check before instruction in main
+[CODIFT] Injected security check before instruction in main
+[CODIFT] Injected security check before instruction in main
+[CODIFT] Injected security check before instruction in main
+[CODIFT] Found return instruction in function: main
+[CO-DIFT INJECT] Processing: main
+[INJECT] Alloca initialized
+[INJECT] Alloca initialized
+[INJECT] Alloca initialized
+[INJECT] Alloca initialized
+[INJECT] Alloca initialized
+[INJECT] Store
+[INJECT] Store
+[INJECT] Store
+[INJECT] Load
+[INJECT] Store
+[INJECT] Load
+[INJECT] Store
+[INJECT] Load
+[INJECT] Store
+[INJECT] Store
+[INJECT] Load
+[INJECT] Store
+[INJECT] Load
+[INJECT] Store
+[CO-DIFT INJECT] Modified: main
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ grep -c "ramReadFunc\|ramWriteFunc\|secExcFunc" llvmIR/testProtected.ll
+75
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ opt-15 -load ./build/CodiftPass.so -check-selective -inject-selective -enable-new-pm=0 llvmIR/test.ll -S -o llvmIR/testProtected.ll
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ grep -c "ramReadFunc\|ramWriteFunc\|secExcFunc" llvmIR/testProtected.ll
+40
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ opt-15 -load ./build/CodiftPass.so -codift-check-selective -codift-inject-selective -enable-new-pm=0 llvmIR/test.ll -S -o llvmIR/testProtected.ll
+[SELECTIVE CO-DIFT INJECT] Processing: access
+[SELECTIVE CO-DIFT INJECT] Modified: access
+[SELECTIVE CHECK] Processing security function: main
+[SELECTIVE CHECK] Injected check for:   %14 = load i32, ptr %4, align 4
+[SELECTIVE CHECK] Modified: main
+[SELECTIVE CO-DIFT INJECT] Processing: main
+  [SELECTIVE] Tainted memory argument: @.str.4 = private unnamed_addr constant [3 x i8] c"%d\00", align 1
+  [SELECTIVE] Tainted memory argument:   %4 = alloca i32, align 4
+[SELECTIVE CO-DIFT INJECT] Modified: main
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ grep -c "ramReadFunc\|ramWriteFunc\|secExcFunc" llvmIR/testProtected.ll
+46
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$
+
 ```
