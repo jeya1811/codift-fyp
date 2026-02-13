@@ -1305,4 +1305,98 @@ jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ grep
 46
 jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$
 
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ opt-15 -load ./build/CodiftPass.so -check -inject -enable-new-pm=0 llvmIR/test.ll -S -o llvmIR/testProtected.ll
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ grep -c "ramReadFunc\|ramWriteFunc\|secExcFunc" llvmIR/testProtected.ll
+36
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ grep ramWriteFunc llvmIR/testProtected.ll     
+  call void @ramWriteFunc(ptr %2, i8 0)
+  call void @ramWriteFunc(ptr %codift_tmp, i8 %3)
+  call void @ramWriteFunc(ptr %codift_tmp2, i8 %codift.merge)
+  call void @ramWriteFunc(ptr %2, i8 %7)
+  call void @ramWriteFunc(ptr %codift_chk_tmp, i8 0)
+  call void @ramWriteFunc(ptr %1, i8 0)
+  call void @ramWriteFunc(ptr %2, i8 0)
+  call void @ramWriteFunc(ptr %3, i8 0)
+  call void @ramWriteFunc(ptr %4, i8 0)
+  call void @ramWriteFunc(ptr %5, i8 0)
+  call void @ramWriteFunc(ptr %codift_tmp, i8 %9)
+  call void @ramWriteFunc(ptr %codift_tmp1, i8 %12)
+  call void @ramWriteFunc(ptr @.str.4, i8 1)
+  call void @ramWriteFunc(ptr %4, i8 1)
+  call void @ramWriteFunc(ptr %codift_tmp2, i8 %16)
+  call void @ramWriteFunc(ptr %codift_chk_tmp, i8 %18)
+  call void @ramWriteFunc(ptr %codift_tmp4, i8 %21)
+  call void @ramWriteFunc(ptr %codift_tmp5, i8 %24)
+declare void @ramWriteFunc(ptr, i8)
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ grep ramReadFunc llvmIR/testProtected.ll      
+  %3 = call i8 @ramReadFunc(ptr %2)
+  %5 = call i8 @ramReadFunc(ptr %codift_tmp1)
+  %7 = call i8 @ramReadFunc(ptr %codift_tmp3)
+  %8 = call i32 @ramReadFunc(ptr noundef %2)
+  %9 = call i8 @ramReadFunc(ptr %3)
+  %12 = call i8 @ramReadFunc(ptr %3)
+  %16 = call i8 @ramReadFunc(ptr %4)
+  %18 = call i8 @ramReadFunc(ptr %codift_tmp3)
+  %19 = call i8 @ramReadFunc(ptr %codift_chk_tmp)
+  %20 = call i32 @ramReadFunc(ptr noundef %4)
+  %21 = call i8 @ramReadFunc(ptr %5)
+  %24 = call i8 @ramReadFunc(ptr %5)
+declare i32 @ramReadFunc(ptr noundef) #1
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ grep secExcFunc llvmIR/testProtected.ll       
+  call void @secExcFunc(i32 noundef %13)
+  call void @secExcFunc(i8 %19)
+  call void @secExcFunc(i32 noundef %25)
+declare void @secExcFunc(i32 noundef) #1
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ clang-15 llvmIR/testProtected.ll src/runtime/codift_runtime.c -o llvmIR/testProtection
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$ ./llvmIR/testProtection
+[CODIFT] Write Tag: address= 0x7ffc74c2c714 <- tag= 0
+[CODIFT] Write Tag: address= 0x7ffc74c2c710 <- tag= 0
+[CODIFT] Write Tag: address= 0x7ffc74c2c70c <- tag= 0
+[CODIFT] Write Tag: address= 0x7ffc74c2c708 <- tag= 0
+[CODIFT] Write Tag: address= 0x7ffc74c2c704 <- tag= 0
+[CODIFT] Write Tag: address= 0x7ffc74c2c700 <- tag= 0
+[CODIFT] Initialized
+(tag memory size: 262144 bytes)
+=== Direct Security Test ===
+
+TEST 1: Clean data
+[CODIFT] Read Tag: address= 0x7ffc74c2c70c -> tag= 0
+[CODIFT] Read Tag: address= 0x7ffc74c2c708 -> tag= 0
+[CODIFT] Write Tag: address= 0x7ffc74c2c718 <- tag= 0
+  Tag: 0
+[CODIFT] Read Tag: address= 0x7ffc74c2c708 -> tag= 0
+[CODIFT] Write Tag: address= 0x7ffc74c2c71c <- tag= 0
+
+[CODIFT SECURITY CHECK PASSED]
+
+TEST 2: Tainted data
+999
+[CODIFT] Write Tag: address= 0x5714a3f2d059 <- tag= 1
+[CODIFT] Write Tag: address= 0x7ffc74c2c704 <- tag= 1
+[CODIFT] Read Tag: address= 0x7ffc74c2c704 -> tag= 1
+[CODIFT] Write Tag: address= 0x7ffc74c2c720 <- tag= 1
+[CODIFT] Read Tag: address= 0x7ffc74c2c724 -> tag= 0
+[CODIFT] Write Tag: address= 0x7ffc74c2c714 <- tag= 0
+[CODIFT] Read Tag: address= 0x7ffc74c2c714 -> tag= 0
+
+[CODIFT SECURITY CHECK PASSED]
+[CODIFT] Write Tag: address= 0x7ffc74c2c6cc <- tag= 0
+[CODIFT] Read Tag: address= 0x7ffc74c2c6cc -> tag= 0
+[CODIFT] Write Tag: address= 0x7ffc74c2c6d0 <- tag= 0
+[CODIFT] Read Tag: address= 0x7ffc74c2c6d4 -> tag= 0
+[CODIFT] Write Tag: address= 0x7ffc74c2c6d8 <- tag= 0
+[CODIFT] Read Tag: address= 0x7ffc74c2c6dc -> tag= 0
+[CODIFT] Write Tag: address= 0x7ffc74c2c6cc <- tag= 0
+[CODIFT] Read Tag: address= 0x7ffc74c2c704 -> tag= 1
+[CODIFT] Read Tag: address= 0x7ffc74c2c700 -> tag= 0
+[CODIFT] Write Tag: address= 0x7ffc74c2c728 <- tag= 0
+  Tag: 1
+[CODIFT] Read Tag: address= 0x7ffc74c2c700 -> tag= 0
+[CODIFT] Write Tag: address= 0x7ffc74c2c72c <- tag= 0
+
+[CODIFT SECURITY EXCEPTION]
+Tainted Data Detected
+Potential control-flow attack prevented...
+jeya1811@DESKTOP-C11QTJA:/mnt/c/Users/Lenovo/Desktop/github/project/CODIFT$
+
 ```
