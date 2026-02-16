@@ -1,7 +1,7 @@
 // direct_test.c
 #include "../runtime/codift_runtime.h"
 #include <stdio.h>
-void access(int tainted){
+void access(int tainted) {
   tainted++;
 }
 int main() {

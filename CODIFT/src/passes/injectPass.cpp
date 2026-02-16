@@ -8,7 +8,7 @@ using namespace llvm;
 
 namespace {
 class SelectiveCodiftInjectPass : public FunctionPass {
-public:
+  public:
   static char ID;
   SelectiveCodiftInjectPass() : FunctionPass(ID) {}
 
@@ -22,19 +22,15 @@ public:
         if (auto* BO = dyn_cast<BinaryOperator>(&I)) {
           if (shouldInstrumentBinaryOp(BO) && shouldTrackBinaryOperation(BO, &F))
             WorkList.push_back(&I);
-        }
-        else if (auto* LI = dyn_cast<LoadInst>(&I)) {
+        } else if (auto* LI = dyn_cast<LoadInst>(&I)) {
           WorkList.push_back(&I);
-        }
-        else if (auto* SI = dyn_cast<StoreInst>(&I)) {
+        } else if (auto* SI = dyn_cast<StoreInst>(&I)) {
           if (shouldTrackStore(SI, &F))
             WorkList.push_back(&I);
-        }
-        else if (auto* AI = dyn_cast<AllocaInst>(&I)) {
+        } else if (auto* AI = dyn_cast<AllocaInst>(&I)) {
           if (shouldInitializeAlloca(AI, &F))
             WorkList.push_back(&I);
-        }
-        else if (auto* CI = dyn_cast<CallInst>(&I)) {
+        } else if (auto* CI = dyn_cast<CallInst>(&I)) {
           Function* calledFunc = CI->getCalledFunction();
           if (calledFunc && isUntrustedSource(calledFunc))
             WorkList.push_back(&I);
@@ -59,7 +55,7 @@ public:
     return modified;
   }
 
-private:
+  private:
   // ============== Selection Logic ==============
 
   bool shouldInstrumentBinaryOp(BinaryOperator* BO) {
@@ -130,7 +126,8 @@ private:
   }
 
   bool isUntrustedSource(Function* F) {
-    if (!F) return false;
+    if (!F)
+      return false;
     StringRef name = F->getName();
     return name.contains("scanf") ||
            name.contains("read") ||
@@ -144,7 +141,7 @@ private:
   bool isUsedInSecurityContext(Instruction* I) {
     for (auto* U : I->users()) {
       if (isa<BranchInst>(U) || isa<ReturnInst>(U) ||
-          isa<CallInst>(U)   || isa<StoreInst>(U))
+          isa<CallInst>(U) || isa<StoreInst>(U))
         return true;
     }
     return false;
@@ -269,7 +266,7 @@ private:
     return B.CreatePointerCast(A, Type::getInt8PtrTy(F->getContext()));
   }
 };
-}
+} // namespace
 
 char SelectiveCodiftInjectPass::ID = 0;
 static RegisterPass<SelectiveCodiftInjectPass>

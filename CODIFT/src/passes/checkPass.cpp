@@ -10,7 +10,7 @@ using namespace llvm;
 
 namespace {
 class SelectiveCodiftCheckPass : public FunctionPass {
-public:
+  public:
   static char ID;
   SelectiveCodiftCheckPass() : FunctionPass(ID) {}
 
@@ -27,13 +27,11 @@ public:
         if (auto* BI = dyn_cast<BranchInst>(&I)) {
           if (BI->isConditional() && mightBeTainted(BI->getCondition(), &F))
             WorkList.push_back(&I);
-        }
-        else if (auto* CI = dyn_cast<CallInst>(&I)) {
+        } else if (auto* CI = dyn_cast<CallInst>(&I)) {
           Function* calledFunc = CI->getCalledFunction();
           if (calledFunc && isSecuritySink(calledFunc))
             WorkList.push_back(&I);
-        }
-        else if (auto* RI = dyn_cast<ReturnInst>(&I)) {
+        } else if (auto* RI = dyn_cast<ReturnInst>(&I)) {
           if (RI->getReturnValue() && mightBeTainted(RI->getReturnValue(), &F))
             WorkList.push_back(&I);
         }
@@ -45,16 +43,14 @@ public:
       if (auto* BI = dyn_cast<BranchInst>(I)) {
         injectSecurityCheck(BI->getCondition(), I, &F);
         modified = true;
-      }
-      else if (auto* CI = dyn_cast<CallInst>(I)) {
+      } else if (auto* CI = dyn_cast<CallInst>(I)) {
         for (unsigned i = 0; i < CI->arg_size(); ++i) {
           if (mightBeTainted(CI->getArgOperand(i), &F)) {
             injectSecurityCheck(CI->getArgOperand(i), I, &F);
             modified = true;
           }
         }
-      }
-      else if (auto* RI = dyn_cast<ReturnInst>(I)) {
+      } else if (auto* RI = dyn_cast<ReturnInst>(I)) {
         injectSecurityCheck(RI->getReturnValue(), I, &F);
         modified = true;
       }
@@ -63,25 +59,25 @@ public:
     return modified;
   }
 
-private:
+  private:
   // ============== Security Policy ==============
 
   bool isSecurityRelevantFunction(Function& F) {
     StringRef name = F.getName();
     std::set<std::string> securityFunctions = {
-      "verify_pin",
-      "activate_lock",
-      "grant_access",
-      "sound_alarm",
-      "display_access_message",
-      "check_authentication",
-      "main"
-    };
+        "verify_pin",
+        "activate_lock",
+        "grant_access",
+        "sound_alarm",
+        "display_access_message",
+        "check_authentication",
+        "main"};
     return securityFunctions.count(name.str()) > 0;
   }
 
   bool isSecuritySink(Function* F) {
-    if (!F) return false;
+    if (!F)
+      return false;
     StringRef name = F->getName();
     return name.contains("lock") ||
            name.contains("grant") ||
@@ -116,7 +112,8 @@ private:
   }
 
   bool isUntrustedSource(Function* F) {
-    if (!F) return false;
+    if (!F)
+      return false;
     StringRef name = F->getName();
     return name.contains("keypad") ||
            name.contains("read") ||
@@ -132,7 +129,7 @@ private:
                            Function* parentFunc) {
     IRBuilder<> Builder(location);
     FunctionCallee readFunc = getOrCreateReadFunc(parentFunc);
-    FunctionCallee secFunc  = getOrCreateSecFunc(parentFunc);
+    FunctionCallee secFunc = getOrCreateSecFunc(parentFunc);
 
     Value* valPtr = getSafePtr(valueToCheck, Builder, parentFunc);
     Value* tag = Builder.CreateCall(readFunc, {valPtr});
@@ -176,7 +173,7 @@ private:
     return B.CreatePointerCast(A, Type::getInt8PtrTy(F->getContext()));
   }
 };
-}
+} // namespace
 
 char SelectiveCodiftCheckPass::ID = 1;
 static RegisterPass<SelectiveCodiftCheckPass>

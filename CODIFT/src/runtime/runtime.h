@@ -9,8 +9,8 @@ extern "C" {
 
 /* ================= Tag Definitions ================= */
 
-#define TAG_CLEAN     0
-#define TAG_TAINTED   1
+#define TAG_CLEAN 0
+#define TAG_TAINTED 1
 
 /* ================= CODIFT Runtime API ================= */
 

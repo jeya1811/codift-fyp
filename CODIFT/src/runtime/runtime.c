@@ -59,7 +59,6 @@ void codift_init(void) {
  * No application changes required
  */
 
-__attribute__((constructor))
-void codift_auto_init(void) {
+__attribute__((constructor)) void codift_auto_init(void) {
   codift_init();
 }
