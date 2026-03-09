@@ -9,16 +9,7 @@ add_definitions(${LLVM_DEFINITIONS})
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-add_library(CountFunc MODULE
-    passes/countFunc.cpp
-)
 add_library(CodiftPass MODULE
-    passes/codiftCheckPass.cpp
-    passes/codiftInjectPass.cpp
-    passes/selective_codiftCheckPass.cpp
-    passes/selective_codiftInjectPass.cpp
-    passes/selectiveCodift_checkPass.cpp
-    passes/selectiveCodift_injectPass.cpp
     passes/checkPass.cpp
     passes/injectPass.cpp
 )
