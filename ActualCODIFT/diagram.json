@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "author": "CO-DIFT Door Lock",
+  "editor": "wokwi",
+  "parts": [
+    { "type": "wokwi-arduino-uno",     "id": "uno",  "top": 320, "left": 20,   "attrs": {} },
+    { "type": "wokwi-lcd1602",         "id": "lcd",  "top": 0,   "left": 220,  "attrs": { "pins": "full" } },
+    { "type": "wokwi-potentiometer",   "id": "pot",  "top": 190, "left": 120,  "attrs": { "value": "100" } },
+    { "type": "wokwi-servo",           "id": "srv",  "top": 0,   "left": 640,  "attrs": {} },
+    { "type": "wokwi-membrane-keypad", "id": "kp",   "top": 10,  "left": -270, "attrs": {} }
+  ],
+  "connections": [
+    ["uno:GND.1","uno:GND.2","black",[]],
+
+    ["kp:R1","uno:4","orange",[]],
+    ["kp:R2","uno:5","orange",[]],
+    ["kp:R3","uno:6","orange",[]],
+    ["kp:R4","uno:7","orange",[]],
+    ["kp:C1","uno:8","yellow",[]],
+    ["kp:C2","uno:9","yellow",[]],
+    ["kp:C3","uno:10","yellow",[]],
+    ["kp:C4","uno:11","yellow",[]],
+
+    ["lcd:VSS","uno:GND.1","black",[]],
+    ["lcd:VDD","uno:5V",   "red",  []],
+    ["lcd:RW", "uno:GND.1","black",[]],
+    ["lcd:RS", "uno:A0",   "green",[]],
+    ["lcd:E",  "uno:A1",   "green",[]],
+    ["lcd:D4", "uno:A2",   "blue", []],
+    ["lcd:D5", "uno:A3",   "blue", []],
+    ["lcd:D6", "uno:A4",   "blue", []],
+    ["lcd:D7", "uno:A5",   "blue", []],
+    ["lcd:V0", "pot:SIG",  "purple",[]],
+    ["pot:VCC","uno:5V",   "red",  []],
+    ["pot:GND","uno:GND.1","black",[]],
+
+    ["srv:GND","uno:GND.2","black",  []],
+    ["srv:V+", "uno:5V",   "red",   []],
+    ["srv:PWM","uno:3",    "orange", []]
+  ]
+}
