@@ -159,7 +159,7 @@ int main(void) {
     if (s.verified) {
       servo_set(SERVO_OPEN);
       lcd_print("  ACCESS GRANTED", "   Door  Opened!");
-      _delay_ms(5000);
+      _delay_ms(3000);
       servo_set(SERVO_LOCK);
       tries = 0;
     } else {

@@ -24,14 +24,14 @@ void secExcFunc(uint8_t tag, uint8_t* addr) {
     DDRB |= (1 << PB5);
     for (uint8_t i = 0; i < 5; i++) {
       PORTB |= (1 << PB5);
-      _delay_ms(50);
+      _delay_ms(500);
       PORTB &= ~(1 << PB5);
-      _delay_ms(50);
+      _delay_ms(500);
     }
 
-    PORTB |= (1 << PB5);
-
+    PORTB &= ~(1 << PB5);
     *addr = 0;
+
   }
 }
 
