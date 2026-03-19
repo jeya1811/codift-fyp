@@ -54,10 +54,6 @@ struct InjectPass : public FunctionPass {
             if (tracesTo(SI->getPointerOperand(), sGV))
               work.push_back(&I);
           }
-        } else if (auto* BO = dyn_cast<BinaryOperator>(&I)) {
-          if (BO->getOpcode() == Instruction::Xor &&
-              !isa<Constant>(BO->getOperand(0)))
-            work.push_back(&I);
         }
       }
 
@@ -69,15 +65,10 @@ struct InjectPass : public FunctionPass {
           changed = true;
           sc++;
         }
-      } else if (auto* BO = dyn_cast<BinaryOperator>(I)) {
-        if (propXor(BO, M)) {
-          changed = true;
-          xc++;
-        }
       }
     }
     if (sc || xc)
-      errs() << "[Inject]  " << sc << " stores " << xc << " xors\n";
+      errs() << "[Inject]  " << sc << " store(s) tagged TAINTED\n";
     return changed;
   }
 
@@ -111,68 +102,6 @@ struct InjectPass : public FunctionPass {
                                                FunctionType::get(Type::getVoidTy(C), {i8p, i8}, false));
     B.CreateCall(wf, {d, B.getInt8(1)});
     return true;
-  }
-  bool propXor(BinaryOperator* BO, Module* M) {
-    Instruction* nx = BO->getNextNode();
-    if (!nx)
-      return false;
-    if (isa<Constant>(BO->getOperand(0)) && isa<Constant>(BO->getOperand(1)))
-      return false;
-    IRBuilder<> B(nx);
-    LLVMContext& C = M->getContext();
-    Type *i8 = Type::getInt8Ty(C), *i8p = PointerType::getUnqual(i8);
-    FunctionCallee rf = M->getOrInsertFunction("ramReadFunc",
-                                               FunctionType::get(i8, {i8p}, false));
-    FunctionCallee wf = M->getOrInsertFunction("ramWriteFunc",
-                                               FunctionType::get(Type::getVoidTy(C), {i8p, i8}, false));
-    Value* t1 = getTag(BO->getOperand(0), B, rf);
-    Value* t2 = getTag(BO->getOperand(1), B, rf);
-    Value* mg = B.CreateOr(t1, t2, "cd.m");
-    Value* rp = resPtr(BO, B);
-    if (!rp)
-      return false;
-    B.CreateCall(wf, {rp, mg});
-    return true;
-  }
-  Value* getTag(Value* V, IRBuilder<>& B, FunctionCallee rf) {
-    if (!V || isa<Constant>(V))
-      return B.getInt8(0);
-    Value* p = valPtr(V, B);
-    if (!p)
-      return B.getInt8(0);
-    return B.CreateCall(rf, {p}, "cd.t");
-  }
-  Value* valPtr(Value* V, IRBuilder<>& B) {
-    if (!V)
-      return nullptr;
-    LLVMContext& C = B.getContext();
-    Type* i8p = PointerType::getUnqual(Type::getInt8Ty(C));
-    if (V->getType()->isPointerTy())
-      return B.CreateBitCast(V, i8p, "cd.vp");
-    if (isa<PHINode>(V) || V->getType()->isVoidTy())
-      return nullptr;
-    Function* F = nullptr;
-    if (auto* I = dyn_cast<Instruction>(V))
-      F = I->getFunction();
-    if (!F)
-      return nullptr;
-    IRBuilder<> E(&*F->getEntryBlock().getFirstInsertionPt());
-    AllocaInst* A = E.CreateAlloca(V->getType(), nullptr, "cd.vt");
-    B.CreateStore(V, A);
-    return B.CreateBitCast(A, i8p, "cd.vtp");
-  }
-  Value* resPtr(Instruction* I, IRBuilder<>& B) {
-    LLVMContext& C = B.getContext();
-    Type* i8p = PointerType::getUnqual(Type::getInt8Ty(C));
-    if (I->getType()->isVoidTy() || isa<PHINode>(I))
-      return nullptr;
-    Function* F = I->getFunction();
-    if (!F)
-      return nullptr;
-    IRBuilder<> E(&*F->getEntryBlock().getFirstInsertionPt());
-    AllocaInst* A = E.CreateAlloca(I->getType(), nullptr, "cd.rt");
-    B.CreateStore(I, A);
-    return B.CreateBitCast(A, i8p, "cd.rtp");
   }
 };
 } // namespace

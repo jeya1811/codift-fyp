@@ -31,7 +31,7 @@ void secExcFunc(uint8_t tag, uint8_t* addr) {
 
     PORTB &= ~(1 << PB5);
     *addr = 0;
-
+    codift_init();
   }
 }
 
