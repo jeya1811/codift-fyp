@@ -1,3 +1,4 @@
+```bash
 jeya1811@ubuntu:~/Github/project/ActualCODIFT$ tree
 .
 ├── codift
@@ -136,4 +137,6 @@ avr-objcopy -O ihex -R .eeprom build/prot/app.elf firmware/door_lock_protected.h
       Zero application code changes    : programmer writes nothing
 ══════════════════════════════════════════════════════════
 
-jeya1811@ubuntu:~/Github/project/ActualCODIFT$ 
+jeya1811@ubuntu:~/Github/project/ActualCODIFT$
+
+```
