@@ -73,7 +73,8 @@ static void lcd_init(void) {
 }
 
 static const char KM[4][4] = {
-    {'1', '2', '3', 'A'}, {'4', '5', '6', 'B'}, {'7', '8', '9', 'C'}, {'*', '0', '#', 'D'}};
+  {'1', '2', '3', 'A'}, {'4', '5', '6', 'B'}, {'7', '8', '9', 'C'}, {'*', '0', '#', 'D'}
+};
 static void kp_init(void) {
   DDRD |= 0xF0;
   PORTD |= 0xF0;
@@ -106,8 +107,8 @@ static char kp_get(void) {
 }
 
 static volatile struct __attribute__((packed)) {
-  char buf[PIN_LEN];
-  uint8_t verified;
+    char buf[PIN_LEN];
+    uint8_t verified;
 } s;
 static volatile uint8_t* const raw = (volatile uint8_t*)&s;
 
