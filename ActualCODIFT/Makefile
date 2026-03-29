@@ -29,10 +29,6 @@ all: passes vulnerable protected
 	@echo "  BUILD COMPLETE"
 	@echo "  Vulnerable : $(FW)/door_lock_vulnerable.hex"
 	@echo "  Protected  : $(FW)/door_lock_protected.hex"
-	@echo "------------------------------------------------------------"
-	@echo "  Wokwi: upload diagram.json then either HEX"
-	@echo "  Attack input: 123456789#"
-	@echo "  Vulnerable → door OPENS   Protected → BLOCKED"
 	@echo "============================================================"
 
 passes: $(PASS_SO)
@@ -55,7 +51,6 @@ $(BD)/runtime.o: codift/runtime.c | $(BD)
 
 vulnerable: $(FW)/door_lock_vulnerable.hex
 	@echo "[VULN]   ✓ $(FW)/door_lock_vulnerable.hex"
-	@echo "[VULN]     → Attack with 123456789# → door OPENS"
 
 $(FW)/door_lock_vulnerable.hex: $(BD)/vuln/app.o | $(FW)
 	$(GCC) -mmcu=$(MCU) $< -o $(BD)/vuln/app.elf
@@ -72,7 +67,6 @@ $(BD)/vuln:
 
 protected: $(FW)/door_lock_protected.hex
 	@echo "[PROT]   ✓ $(FW)/door_lock_protected.hex"
-	@echo "[PROT]     → Attack with 123456789# → BLOCKED"
 
 $(FW)/door_lock_protected.hex: $(BD)/prot/app_dift.o $(BD)/runtime.o | $(FW)
 	$(GCC) -mmcu=$(MCU) $^ -o $(BD)/prot/app.elf
@@ -129,20 +123,21 @@ stats: $(BD)/prot/app.ll $(BD)/prot/app_dift.ll \
 	@before_total=$$(grep -c "." $(BD)/prot/app.ll 2>/dev/null || echo 0); \
 	 after_total=$$(grep -c "." $(BD)/prot/app_dift.ll 2>/dev/null || echo 0); \
 	 overhead=$$(awk "BEGIN{printf \"~%.1f%%\", (($$after_total-$$before_total)/$$before_total)*100}"); \
-	 printf "\n      %-12s %6d %6d %8s\n" "Total lines" "$$before_total" "$$after_total" "$$overhead"
+	 printf "\n      %-12s %6d %6d %8s (IR overhead)\n" "Total lines" "$$before_total" "$$after_total" "$$overhead"
 	@echo ""
 	@echo "  [2] Binary Flash Usage"
 	@vuln=$$(avr-size $(BD)/vuln/app.elf 2>/dev/null | awk 'NR==2{print $$1+$$2}'); \
 	 prot=$$(avr-size $(BD)/prot/app.elf 2>/dev/null | awk 'NR==2{print $$1+$$2}'); \
 	 overhead=$$(awk "BEGIN{printf \"+%.1f%%\", (($$prot-$$vuln)/$$vuln)*100}"); \
 	 printf "      Vulnerable (no DIFT):  %8d bytes\n" "$$vuln"; \
-	 printf "      Protected  (with DIFT):%8d bytes  (%s overhead)\n" "$$prot" "$$overhead"; \
+	 printf "      Protected  (with DIFT):%8d bytes  (%s flash overhead)\n" "$$prot" "$$overhead"; \
 	 echo "      ATmega328P flash total:    32768 bytes"
 	@echo ""
 	@echo "  [3] Comparison with CO-DIFT paper (IEEE CCNC 2025)"
-	@echo "      Full CO-DIFT (instrument all)    : ~118% IR overhead"
-	@echo "      Selective CO-DIFT (this project) : see Total lines above"
-	@echo "      Zero application code changes    : programmer writes nothing"
+	@echo "      Full CO-DIFT        : ~118% IR overhead"
+	@echo "      Selective CO-DIFT   : see above IR overheaad"
+	@echo "      source code change  : null"
+	@echo ""
 	@echo "══════════════════════════════════════════════════════════"
 	@echo ""
 

@@ -1,6 +1,8 @@
 #ifndef CODIFT_RUNTIME_H
 #define CODIFT_RUNTIME_H
+
 #include <stdint.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -19,4 +21,5 @@ void secExcFunc(uint8_t tag, uint8_t* addr);
 #ifdef __cplusplus
 }
 #endif
+
 #endif
