@@ -129,7 +129,7 @@ stats: $(BD)/prot/app.ll $(BD)/prot/app_dift.ll \
 	@vuln=$$(avr-size $(BD)/vuln/app.elf 2>/dev/null | awk 'NR==2{print $$1+$$2}'); \
 	 prot=$$(avr-size $(BD)/prot/app.elf 2>/dev/null | awk 'NR==2{print $$1+$$2}'); \
 	 overhead=$$(awk "BEGIN{printf \"+%.1f%%\", (($$prot-$$vuln)/$$vuln)*100}"); \
-	 printf "      Vulnerable (no DIFT):  %8d bytes\n" "$$vuln"; \
+	 printf "      Vulnerable (no DIFT)  :%8d bytes\n" "$$vuln"; \
 	 printf "      Protected  (with DIFT):%8d bytes  (%s flash overhead)\n" "$$prot" "$$overhead"; \
 	 echo "      ATmega328P flash total:    32768 bytes"
 	@echo ""
