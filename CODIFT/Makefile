@@ -5,6 +5,10 @@ GCC     := avr-gcc
 OBJCOPY := avr-objcopy
 CMAKE   := cmake
 
+PORT    ?= /dev/ttyACM0
+BAUD    := 115200
+PROG    := arduino
+
 MCU     := atmega328p
 F_CPU   := 16000000UL
 SRC     := src/door_lock.c
@@ -21,7 +25,7 @@ CLANG_FLAGS := --target=avr-unknown-unknown \
                -ffreestanding -fno-exceptions \
                -emit-llvm -S
 
-.PHONY: all passes vulnerable protected stats clean
+.PHONY: all passes vulnerable protected stats flash-vulnerable flash-protected clean
 
 all: passes vulnerable protected
 	@echo ""
@@ -135,11 +139,20 @@ stats: $(BD)/prot/app.ll $(BD)/prot/app_dift.ll \
 	@echo ""
 	@echo "  [3] Comparison with CO-DIFT paper (IEEE CCNC 2025)"
 	@echo "      Full CO-DIFT        : ~118% IR overhead"
-	@echo "      Selective CO-DIFT   : see above IR overheaad"
+	@before=$$(grep -c "." $(BD)/prot/app.ll 2>/dev/null || echo 0); \
+	 after=$$(grep -c "." $(BD)/prot/app_dift.ll 2>/dev/null || echo 0); \
+	 overhead=$$(awk "BEGIN{printf \"~%.1f%%\", (($$after-$$before)/$$before)*100}"); \
+	 printf "      Selective CO-DIFT   : %s IR overhead\n" "$$overhead"
 	@echo "      source code change  : null"
 	@echo ""
 	@echo "══════════════════════════════════════════════════════════"
 	@echo ""
+
+flash-vulnerable: $(FW)/door_lock_vulnerable.hex
+	avrdude -c $(PROG) -p $(MCU) -P $(PORT) -b $(BAUD) -U flash:w:$<:i
+
+flash-protected: $(FW)/door_lock_protected.hex
+	avrdude -c $(PROG) -p $(MCU) -P $(PORT) -b $(BAUD) -U flash:w:$<:i
 
 clean:
 	@echo "[CLEAN] Removing build/ and firmware/..."
