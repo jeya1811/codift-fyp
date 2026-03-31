@@ -1,5 +1,4 @@
 /CODIFT/build/
-/CODIFT/llvmIR/
-/.vs/
-/ActualCODIFT/build/
-/ActualCODIFT/firmware/
+/CODIFT/firmware/
+/CODIFT_PROTO/build/
+/CODIFT_PROTO/llvmIR/
