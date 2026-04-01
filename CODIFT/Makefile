@@ -25,7 +25,83 @@ CLANG_FLAGS := --target=avr-unknown-unknown \
                -ffreestanding -fno-exceptions \
                -emit-llvm -S
 
-.PHONY: all passes vulnerable protected stats flash-vulnerable flash-protected clean
+.PHONY: all passes vulnerable protected stats flash-vulnerable flash-protected clean install-tools verify-tools
+
+install-tools:
+	@echo ""
+	@echo "============================================================"
+	@echo "  CO-DIFT  –  Installing Dependencies"
+	@echo "============================================================"
+	@echo ""
+
+	@echo "[1/5] Updating apt package list..."
+	sudo apt-get update -qq
+
+	@echo ""
+	@echo "[2/5] Installing LLVM / Clang 15 toolchain..."
+	@if ! apt-cache show clang-15 > /dev/null 2>&1; then \
+	    echo "      LLVM 15 not found in current sources – adding llvm.sh repo..."; \
+	    wget -qO /tmp/llvm.sh https://apt.llvm.org/llvm.sh; \
+	    chmod +x /tmp/llvm.sh; \
+	    sudo /tmp/llvm.sh 15; \
+	fi
+	sudo apt-get install -y \
+	    clang-15 \
+	    llvm-15 \
+	    llvm-15-dev \
+	    llvm-15-tools \
+	    libclang-15-dev
+	@echo "      ✓ LLVM / Clang 15 installed"
+
+	@echo ""
+	@echo "[3/5] Installing AVR cross-compilation toolchain..."
+	sudo apt-get install -y \
+	    gcc-avr \
+	    binutils-avr \
+	    avr-libc \
+	    avrdude
+	@echo "      ✓ AVR toolchain installed"
+
+	@echo ""
+	@echo "[4/5] Installing build system tools..."
+	sudo apt-get install -y \
+	    cmake \
+	    make \
+	    build-essential \
+	    wget
+	@echo "      ✓ Build tools installed"
+
+	@echo ""
+	@echo "[5/5] Verifying installations..."
+	@$(MAKE) verify-tools
+	@echo ""
+	@echo "============================================================"
+	@echo "  All dependencies installed successfully!"
+	@echo "  You can now run:  make all"
+	@echo "============================================================"
+	@echo ""
+
+verify-tools:
+	@echo ""
+	@echo "  Verifying required tools:"
+	@missing=0; \
+	for tool in clang-15 opt-15 llc-15 llvm-config-15 avr-gcc avr-objcopy avr-size avrdude cmake make; do \
+	    if command -v $$tool > /dev/null 2>&1; then \
+	        printf "      %-20s ✓  %s\n" "$$tool" "$$($$tool --version 2>&1 | head -1)"; \
+	    else \
+	        printf "      %-20s ✗  NOT FOUND\n" "$$tool"; \
+	        missing=$$((missing + 1)); \
+	    fi; \
+	done; \
+	if [ $$missing -gt 0 ]; then \
+	    echo ""; \
+	    echo "  ✗  $$missing tool(s) missing – run  make install  to fix this."; \
+	    exit 1; \
+	else \
+	    echo ""; \
+	    echo "  ✓  All tools found."; \
+	fi
+	@echo ""
 
 all: passes vulnerable protected
 	@echo ""
