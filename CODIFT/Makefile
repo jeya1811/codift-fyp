@@ -25,7 +25,7 @@ CLANG_FLAGS := --target=avr-unknown-unknown \
                -ffreestanding -fno-exceptions \
                -emit-llvm -S
 
-.PHONY: all passes vulnerable protected stats flash-vulnerable flash-protected clean install-tools verify-tools
+.PHONY: all passes vulnerable protected stats flash-vulnerable flash-protected install-tools verify-tools remove-tools clean
 
 install-tools:
 	@echo ""
@@ -66,7 +66,6 @@ install-tools:
 	@echo "[4/5] Installing build system tools..."
 	sudo apt-get install -y \
 	    cmake \
-	    make \
 	    build-essential \
 	    wget
 	@echo "      ✓ Build tools installed"
@@ -77,7 +76,6 @@ install-tools:
 	@echo ""
 	@echo "============================================================"
 	@echo "  All dependencies installed successfully!"
-	@echo "  You can now run:  make all"
 	@echo "============================================================"
 	@echo ""
 
@@ -85,9 +83,14 @@ verify-tools:
 	@echo ""
 	@echo "  Verifying required tools:"
 	@missing=0; \
-	for tool in clang-15 opt-15 llc-15 llvm-config-15 avr-gcc avr-objcopy avr-size avrdude cmake make; do \
+	for tool in clang-15 opt-15 llc-15 llvm-config-15 avr-gcc avr-objcopy avr-size avrdude cmake; do \
 	    if command -v $$tool > /dev/null 2>&1; then \
-	        printf "      %-20s ✓  %s\n" "$$tool" "$$($$tool --version 2>&1 | head -1)"; \
+	      	if [ "$$tool" = "avrdude" ]; then \
+	            ver=$$($$tool --version 2>&1 | tail -1); \
+	      	else \
+	            ver=$$($$tool --version 2>&1 | head -1); \
+	      	fi; \
+	      	printf "      %-20s ✓  %s\n" "$$tool" "$$ver"; \
 	    else \
 	        printf "      %-20s ✗  NOT FOUND\n" "$$tool"; \
 	        missing=$$((missing + 1)); \
@@ -95,12 +98,58 @@ verify-tools:
 	done; \
 	if [ $$missing -gt 0 ]; then \
 	    echo ""; \
-	    echo "  ✗  $$missing tool(s) missing – run  make install  to fix this."; \
+	    echo "  ✗  $$missing tool(s) missing!"; \
 	    exit 1; \
 	else \
 	    echo ""; \
 	    echo "  ✓  All tools found."; \
 	fi
+	@echo ""
+
+remove-tools:
+	@echo ""
+	@echo "============================================================"
+	@echo "  CO-DIFT  –  Removing dependencies"
+	@echo "============================================================"
+	@echo ""
+
+	@echo "[1/5] Removing LLVM / Clang 15 toolchain..."
+	sudo apt-get remove --purge -y \
+	    clang-15 \
+	    llvm-15 \
+	    llvm-15-dev \
+	    llvm-15-tools \
+	    libclang-15-dev
+	@echo "      ✓ LLVM / Clang 15 removed"
+
+	@echo ""
+	@echo "[2/5] Removing AVR cross-compilation toolchain..."
+	sudo apt-get remove --purge -y \
+	    gcc-avr \
+	    binutils-avr \
+	    avr-libc \
+	    avrdude
+	@echo "      ✓ AVR toolchain removed"
+
+	@echo ""
+	@echo "[3/5] Removing build system tools..."
+	sudo apt-get remove --purge -y \
+	    cmake \
+	    build-essential
+	@echo "      ✓ Build tools removed"
+	
+	@echo ""
+	@echo "[4/5] Autoremove..."
+	sudo apt-get autoremove --purge -y
+	
+	@echo ""
+	@echo "[5/5] Autoclean..."
+	sudo apt-get autoclean && sudo apt-get clean
+
+	@echo ""
+	@echo "============================================================"
+	@echo "  All dependencies removed successfully!"
+	@echo "============================================================"
 	@echo ""
 
 all: passes vulnerable protected
