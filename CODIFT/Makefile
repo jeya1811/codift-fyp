@@ -34,11 +34,11 @@ install-tools:
 	@echo "============================================================"
 	@echo ""
 
-	@echo "[1/5] Updating apt package list..."
+	@echo "[1/4] Updating apt package list..."
 	sudo apt-get update -qq
 
 	@echo ""
-	@echo "[2/5] Installing LLVM / Clang 15 toolchain..."
+	@echo "[2/4] Installing LLVM / Clang 15 toolchain..."
 	@if ! apt-cache show clang-15 > /dev/null 2>&1; then \
 	    echo "      LLVM 15 not found in current sources – adding llvm.sh repo..."; \
 	    wget -qO /tmp/llvm.sh https://apt.llvm.org/llvm.sh; \
@@ -54,7 +54,7 @@ install-tools:
 	@echo "      ✓ LLVM / Clang 15 installed"
 
 	@echo ""
-	@echo "[3/5] Installing AVR cross-compilation toolchain..."
+	@echo "[3/4] Installing AVR cross-compilation toolchain..."
 	sudo apt-get install -y \
 	    gcc-avr \
 	    binutils-avr \
@@ -63,16 +63,13 @@ install-tools:
 	@echo "      ✓ AVR toolchain installed"
 
 	@echo ""
-	@echo "[4/5] Installing build system tools..."
+	@echo "[4/4] Installing build system tools..."
 	sudo apt-get install -y \
 	    cmake \
 	    build-essential \
 	    wget
 	@echo "      ✓ Build tools installed"
 
-	@echo ""
-	@echo "[5/5] Verifying installations..."
-	@$(MAKE) verify-tools
 	@echo ""
 	@echo "============================================================"
 	@echo "  All dependencies installed successfully!"
@@ -113,7 +110,7 @@ remove-tools:
 	@echo "============================================================"
 	@echo ""
 
-	@echo "[1/5] Removing LLVM / Clang 15 toolchain..."
+	@echo "[1/4] Removing LLVM / Clang 15 toolchain..."
 	sudo apt-get remove --purge -y \
 	    clang-15 \
 	    llvm-15 \
@@ -123,7 +120,7 @@ remove-tools:
 	@echo "      ✓ LLVM / Clang 15 removed"
 
 	@echo ""
-	@echo "[2/5] Removing AVR cross-compilation toolchain..."
+	@echo "[2/4] Removing AVR cross-compilation toolchain..."
 	sudo apt-get remove --purge -y \
 	    gcc-avr \
 	    binutils-avr \
@@ -132,18 +129,15 @@ remove-tools:
 	@echo "      ✓ AVR toolchain removed"
 
 	@echo ""
-	@echo "[3/5] Removing build system tools..."
+	@echo "[3/4] Removing build system tools..."
 	sudo apt-get remove --purge -y \
 	    cmake \
 	    build-essential
 	@echo "      ✓ Build tools removed"
 	
 	@echo ""
-	@echo "[4/5] Autoremove..."
+	@echo "[4/4] Autoremove && Autoclean..."
 	sudo apt-get autoremove --purge -y
-	
-	@echo ""
-	@echo "[5/5] Autoclean..."
 	sudo apt-get autoclean && sudo apt-get clean
 
 	@echo ""
