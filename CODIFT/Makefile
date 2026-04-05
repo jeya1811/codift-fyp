@@ -5,7 +5,7 @@ GCC     := avr-gcc
 OBJCOPY := avr-objcopy
 CMAKE   := cmake
 
-PORT    ?= /dev/ttyACM0
+PORT    ?= /dev/ttyUSB0
 BAUD    := 115200
 PROG    := arduino
 
@@ -25,7 +25,7 @@ CLANG_FLAGS := --target=avr-unknown-unknown \
                -ffreestanding -fno-exceptions \
                -emit-llvm -S
 
-.PHONY: all passes vulnerable protected stats flash-vulnerable flash-protected install-tools verify-tools remove-tools clean
+.PHONY: all passes vulnerable protected stats flash-vulnerable flash-protected install-tools verify-tools remove-tools install-wintools remove-wintools clean
 
 install-tools:
 	@echo ""
@@ -143,6 +143,40 @@ remove-tools:
 	@echo ""
 	@echo "============================================================"
 	@echo "  All dependencies removed successfully!"
+	@echo "============================================================"
+	@echo ""
+
+install-wintools:
+	@echo ""
+	@echo "============================================================"
+	@echo "	CO-DIFT - Installing window dependencies"
+	@echo "============================================================"
+	@echo ""
+
+	sudo apt-get install -y linux-tools-generic\
+		hwdata
+	sudo update-alternatives --install /usr/local/bin/usbip usbip /usr/lib/linux-tools/*-generic/usbip 20
+
+	@echo ""
+	@echo "============================================================"
+	@echo "	 All window dependencies installed successfully!"
+	@echo "============================================================"
+	@echo ""
+
+remove-wintools:
+	@echo ""
+	@echo "============================================================"
+	@echo "	CO-DIFT - Removing window dependencies"
+	@echo "============================================================"
+	@echo ""
+
+	sudo update-alternatives --remove usbip /usr/lib/linux-tools/*-generic/usbip
+	sudo apt-get remove --purge -y linux-tools-generic
+	sudo apt-get autoremove --purge -y
+
+	@echo ""
+	@echo "============================================================"
+	@echo "	All window dependencies removed successfully"
 	@echo "============================================================"
 	@echo ""
 
